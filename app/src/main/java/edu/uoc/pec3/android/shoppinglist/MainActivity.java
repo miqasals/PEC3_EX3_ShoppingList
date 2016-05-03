@@ -117,4 +117,8 @@ public class MainActivity extends AppCompatActivity {
         shoppingItems.addAll(mShoppingItemDB.getAllItems());
         shoppingItemAdapter.notifyDataSetChanged();
     }
+
+
+    // TODO: OPTIONAL. Implement onSaveInstanceState() for prevent data destruction on device rotation.
+
 }
