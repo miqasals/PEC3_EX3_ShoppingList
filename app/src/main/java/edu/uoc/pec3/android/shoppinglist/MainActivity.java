@@ -1,6 +1,7 @@
 package edu.uoc.pec3.android.shoppinglist;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,17 +26,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set views
-        mListView = (ListView) findViewById(R.id.listView);
-
         // Init database shopping list
         mShoppingItemDB = new ShoppingItemDB(this);
 
-        // Start with an empty database
-        mShoppingItemDB.clearAllItems();
+        /**
+         * Check if exist a instance state saved for prevent the reinitialize the
+         * database elements.
+         */
 
-        // Insert items
-        insertProducts();
+        if (savedInstanceState == null){
+            // If there is any instance saved, the DB will be initialized.
+
+            // Start with an empty database
+            mShoppingItemDB.clearAllItems();
+
+            // Insert items
+            insertProducts();
+        }
+
+
+        // Set views
+        mListView = (ListView) findViewById(R.id.listView);
 
         // Get all the items
         shoppingItems.addAll(mShoppingItemDB.getAllItems());
@@ -59,9 +70,18 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //no inspection SimplifiableIfStatement
         if (id == R.id.action_update_list) {
             updateProducts();
+            updateList();
+            return true;
+        } else if (id == R.id.action_init_list) {
+            /**
+             * This part is added for give the option of reset the database
+             * without reinstaling the apk.
+             */
+            mShoppingItemDB.clearAllItems();
+            insertProducts();
             updateList();
             return true;
         }
@@ -117,8 +137,5 @@ public class MainActivity extends AppCompatActivity {
         shoppingItems.addAll(mShoppingItemDB.getAllItems());
         shoppingItemAdapter.notifyDataSetChanged();
     }
-
-
-    // TODO: OPTIONAL. Implement onSaveInstanceState() for prevent data destruction on device rotation.
 
 }
